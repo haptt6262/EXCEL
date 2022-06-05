@@ -45,6 +45,14 @@ const API_SCHEME = {
         SEARCH_PAGINATION: {
             url: `${BASE_URL}/search-pagination`,
             method: METHOD.GET
+        },
+        UPLOAD_EXCEL: {
+            url: `${BASE_URL}/excel`,
+            method: METHOD.POST
+        },
+        FILTER_DATA: {
+            url: `${BASE_URL}/filter`,
+            method: METHOD.GET
         }
     }
 }

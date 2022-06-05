@@ -16,6 +16,7 @@ export default function itemInstanceReducer(state = INITIAL_STATE, { type, paylo
         case ItemTypes.CREATE_ITEM_REQUEST:
         case ItemTypes.DELETE_ITEM_REQUEST:
         case ItemTypes.UPDATE_ITEM_REQUEST:
+        case ItemTypes.UPLOAD_EXCEL_REQUEST:
             return {
                 ...state,
                 isFetching: true,
@@ -25,6 +26,7 @@ export default function itemInstanceReducer(state = INITIAL_STATE, { type, paylo
         case ItemTypes.DELETE_ITEM_FAILURE:
         case ItemTypes.CREATE_ITEM_FAILURE:
         case ItemTypes.UPDATE_ITEM_FAILURE:
+        case ItemTypes.UPLOAD_EXCEL_FAILURE:
             return {
                 ...state,
                 isFetching: false,
@@ -44,6 +46,12 @@ export default function itemInstanceReducer(state = INITIAL_STATE, { type, paylo
                 item: payload.item
             }
         case ItemTypes.DELETE_ITEM_SUCCESS:
+            return {
+                ...state,
+                isFetching: false,
+                item: payload.item
+            }
+        case ItemTypes.UPLOAD_EXCEL_SUCCESS:
             return {
                 ...state,
                 isFetching: false,

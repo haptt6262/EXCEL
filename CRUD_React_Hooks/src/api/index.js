@@ -13,5 +13,7 @@ export const itemApi = {
     deleteItem: Helpers.createApi(ApiScheme.ITEMS.DELETE),
     updateItem: Helpers.createApi(ApiScheme.ITEMS.UPDATE),
     paginationItem: Helpers.createApi(ApiScheme.ITEMS.PAGINATION),
-    searchPaginationItem: Helpers.createApi(ApiScheme.ITEMS.SEARCH_PAGINATION)
+    searchPaginationItem: Helpers.createApi(ApiScheme.ITEMS.SEARCH_PAGINATION),
+    uploadExcel: Helpers.createApi(ApiScheme.ITEMS.UPLOAD_EXCEL),
+    filterData: Helpers.createApi(ApiScheme.ITEMS.FILTER_DATA)
 }

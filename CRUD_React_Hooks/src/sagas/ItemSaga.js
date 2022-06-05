@@ -6,6 +6,9 @@ import {
     UpdateItem,
     PaginationItem,
     SearchPaginationItem,
+    UploadExcel,
+    FilterData,
+
 } from "../actions";
 import { actionTypes } from "../container";
 import { itemApi } from "../api";
@@ -16,7 +19,7 @@ function* handleFetchListItems({ payload }) {
         const res = yield itemApi.fetchList();
         yield put(
             ItemAction.fetchListSuccess({
-                list: res,
+                list: res.listItem,
             })
         );
     } catch (error) {
@@ -70,18 +73,17 @@ function* handleFetchUpdateItems({ payload }) {
 }
 function* handleFetchPaginationItems({ payload }) {
     try {
-        const res = yield itemApi.fetchList(
+        const res = yield itemApi.paginationItem(
             null,
             { _page: `${payload}&_limit=${LIMIT}` },
             null
         );
-        const TotalItem = yield itemApi.fetchList();
-        const TotalPage = Math.ceil(TotalItem.length / LIMIT);
         yield put(
             PaginationItem.paginationItemSuccess({
-                list: res,
-                totalPage: TotalPage,
+                list: res.listItem,
+                totalPage: res.totalPage,
                 activePage: payload,
+                allData: res.allData
             })
         );
     } catch (error) {
@@ -94,20 +96,15 @@ function* handleFetchPaginationItems({ payload }) {
 }
 function* handleFetchSearchPaginationItems({ payload }) {
     try {
-        const res = yield itemApi.fetchList(
+        const res = yield itemApi.searchPaginationItem(
             null,
             { _page: `${payload.activePage}&_limit=${LIMIT}&q=${payload.name}` },
             null
         );
-        const textSearch = payload.name;
-        const TotalItem = yield itemApi.fetchList({
-            name: { $regex: textSearch, $options: "i" },
-        });
-        const TotalPage = Math.ceil(TotalItem.length / LIMIT);
         yield put(
             PaginationItem.paginationItemSuccess({
-                list: res,
-                totalPage: TotalPage,
+                list: res.listItem,
+                totalPage: res.totalPage,
                 activePage: payload.activePage,
                 textSearch: payload.name,
             })
@@ -115,6 +112,33 @@ function* handleFetchSearchPaginationItems({ payload }) {
     } catch (error) {
         yield put(
             SearchPaginationItem.searchPaginationItemFailure({
+                message: error.message,
+            })
+        );
+    }
+}
+function* handleFetchUploadExcel({ payload }) {
+    try {
+        const res = yield itemApi.uploadExcel(null, null, payload.form)
+        yield put(UploadExcel.uploadExcelSuccess(res));
+        yield put(ItemAction.fetchListRequest());
+    } catch (error) {
+        yield put(
+            UploadExcel.uploadExcelFailure({
+                message: error.message,
+            })
+        );
+    }
+}
+function* handleFetchFilterData({ payload }) {
+    try {
+        console.log(payload);
+        const res = yield itemApi.filterData(null, { start: `${payload.startValue}&end=${payload.endValue}` }, null);
+        console.log(res, "res in saga ");
+        yield put(FilterData.filterDataSuccess({ list: res }))
+    } catch (error) {
+        yield put(
+            FilterData.filterDataFailure({
                 message: error.message,
             })
         );
@@ -133,6 +157,8 @@ const itemSaga = [
         actionTypes.ItemTypes.SEARCH_PAGINATION_ITEM_REQUEST,
         handleFetchSearchPaginationItems
     ),
+    takeLatest(actionTypes.ItemTypes.UPLOAD_EXCEL_REQUEST, handleFetchUploadExcel),
+    takeLatest(actionTypes.ItemTypes.FILTER_DATA_REQUEST, handleFetchFilterData),
 ];
 
 export default itemSaga;

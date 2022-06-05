@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useItem } from "../hooks";
+import ImportExcel from "./ImportExcel"
+import ExportExcel from "./ExportExcel"
+import Export from "./Export"
+import FilterData from "./FilterData"
 
-export default function Home() {
+export default function Home(props) {
     const {
         isError,
-        // handleFetchList,
         isFetching,
         list,
         totalPage,
@@ -16,14 +19,10 @@ export default function Home() {
         handlePaginationItem,
         handleSearchPaginationItem,
     } = useItem();
-    // const [currentPage, setCurrentPage] = useState(1)
-    // const [itemsPerPage] = useState(5)
-    // const indexOfLastItem = currentPage * itemsPerPage
-    // const indexOfFirstItem = indexOfLastItem - itemsPerPage
-    // const currentItems = list.slice(indexOfFirstItem, indexOfLastItem)
     const [inputName, setInputName] = useState("");
-    const [id, setId] = useState();
+    const [id, setId] = useState("");
     const [textSearch, setTextSearch] = useState("");
+    const [checkedCheckboxes, setCheckedCheckboxes] = useState([]);
 
     const pageNumbers = [];
     for (let i = 1; i <= totalPage; i++) {
@@ -31,7 +30,6 @@ export default function Home() {
     }
     useEffect(() => {
         handlePaginationItem(1);
-        // handleFetchList()
     }, []);
     if (isFetching) {
         return <p>Loading</p>;
@@ -39,37 +37,69 @@ export default function Home() {
     if (isError) {
         return <p>{message}</p>;
     }
-    let ListItem = [];
-    ListItem = list.map((item, key) => {
-        return (
-            <tr key={key}>
-                <th>{item.id}</th>
-                <th>{item.name}</th>
-                <th>
-                    <button
-                        onClick={() => {
-                            handleDeleteItem({ id: item.id });
-                        }}
-                    >
-                        DELETE
-                    </button>
-                </th>
-                <th>
-                    <button
-                        onClick={(e) => {
-                            setInputName(item.name);
-                            setId(item.id);
-                        }}
-                    >
-                        SELECT
-                    </button>
-                </th>
-            </tr>
+
+    const checkClick = (data) => {
+        const isChecked = checkedCheckboxes.some(
+            (checkedCheckbox) => checkedCheckbox.Name === data.Name
         );
-    });
+        if (isChecked) {
+            setCheckedCheckboxes(
+                checkedCheckboxes.filter(
+                    (checkedCheckbox) => checkedCheckbox.Name !== data.Name
+                )
+            );
+        } else {
+            setCheckedCheckboxes(checkedCheckboxes.concat(data));
+        }
+    };
+    // console.log(checkedCheckboxes)
+
+    let ListItem = [];
+    ListItem =
+        list &&
+        list.length &&
+        list.map((item, key) => {
+            return (
+                <tr key={key}>
+                    <th>{key + 1}</th>
+                    <th>{item.Name}</th>
+                    <th>
+                        <input type="checkbox"
+                            value={item.Name}
+                            checked={checkedCheckboxes.some(
+                                (checkedCheckbox) => checkedCheckbox.Name === item.Name
+                            )}
+                            onChange={() => { checkClick(item) }} />
+                    </th>
+                    <th>
+                        <button
+                            onClick={() => {
+                                handleDeleteItem({ id: item._id });
+                            }}
+                        >
+                            DELETE
+                        </button>
+                        <button
+                            style={{ marginLeft: "12px" }}
+                            onClick={(e) => {
+                                setInputName(item.Name);
+                                setId(item._id);
+                            }}
+                        >
+                            SELECT
+                        </button>
+                    </th>
+                </tr>
+            );
+        });
     return (
         <>
             <div>Homepage</div>
+            <div className="excel-form">
+                <ImportExcel />
+                <ExportExcel />
+                <Export checkBoxes={checkedCheckboxes} />
+            </div>
             <div>
                 <input
                     type="text"
@@ -107,15 +137,22 @@ export default function Home() {
                     SEARCH
                 </button>
             </div>
-            <table>
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Name</th>
-                    </tr>
-                </thead>
-                <tbody>{ListItem}</tbody>
-            </table>
+            <div>
+                <FilterData />
+            </div>
+            <div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {ListItem}
+                    </tbody>
+                </table>
+            </div>
             <div>
                 {pageNumbers.map((pageNumber) => (
                     <button
@@ -132,3 +169,4 @@ export default function Home() {
         </>
     );
 }
+

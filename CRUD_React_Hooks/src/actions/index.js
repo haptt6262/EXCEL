@@ -31,3 +31,14 @@ export const SearchPaginationItem = {
     searchPaginationItemSuccess: createAction(actionTypes.ItemTypes.SEARCH_PAGINATION_ITEM_SUCCESS),
     searchPaginationItemFailure: createAction(actionTypes.ItemTypes.SEARCH_PAGINATION_ITEM_FAILURE)
 }
+export const UploadExcel = {
+    uploadExcelRequest: createAction(actionTypes.ItemTypes.UPLOAD_EXCEL_REQUEST),
+    uploadExcelSuccess: createAction(actionTypes.ItemTypes.UPLOAD_EXCEL_SUCCESS),
+    uploadExcelFailure: createAction(actionTypes.ItemTypes.UPLOAD_EXCEL_FAILURE)
+}
+
+export const FilterData = {
+    filterDataRequest: createAction(actionTypes.ItemTypes.FILTER_DATA_REQUEST),
+    filterDataSuccess: createAction(actionTypes.ItemTypes.FILTER_DATA_SUCCESS),
+    filterDataFailure: createAction(actionTypes.ItemTypes.FILTER_DATA_FAILURE)
+}
