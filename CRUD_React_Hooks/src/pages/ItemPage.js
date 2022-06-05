@@ -40,12 +40,12 @@ export default function Home(props) {
 
     const checkClick = (data) => {
         const isChecked = checkedCheckboxes.some(
-            (checkedCheckbox) => checkedCheckbox.Name === data.Name
+            (checkedCheckbox) => checkedCheckbox._id === data._id
         );
         if (isChecked) {
             setCheckedCheckboxes(
                 checkedCheckboxes.filter(
-                    (checkedCheckbox) => checkedCheckbox.Name !== data.Name
+                    (checkedCheckbox) => checkedCheckbox._id !== data._id
                 )
             );
         } else {
@@ -67,7 +67,7 @@ export default function Home(props) {
                         <input type="checkbox"
                             value={item.Name}
                             checked={checkedCheckboxes.some(
-                                (checkedCheckbox) => checkedCheckbox.Name === item.Name
+                                (checkedCheckbox) => checkedCheckbox._id === item._id
                             )}
                             onChange={() => { checkClick(item) }} />
                     </th>
